@@ -39,10 +39,11 @@ def get_coordinates(city_name):
     Fetches latitude and longitude for a given city name using Open-Meteo geocoding API.
     """
     logger.info(f"Geocoding city: {city_name}")
-    url = f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}&count=1&language=en&format=json"
+    url = "https://geocoding-api.open-meteo.com/v1/search"
+    params = {"name": city_name, "count": 1, "language": "en", "format": "json"}
     
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, params=params, timeout=5)
         response.raise_for_status()
         data = response.json()
         
@@ -63,10 +64,11 @@ def get_current_weather(lat, lon, city_name):
     Fetches current weather for coordinates.
     """
     logger.info(f"Fetching current weather for {city_name} ({lat}, {lon})")
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code"
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {"latitude": lat, "longitude": lon, "current": "temperature_2m,relative_humidity_2m,weather_code"}
     
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, params=params, timeout=5)
         response.raise_for_status()
         data = response.json()
         
@@ -87,10 +89,11 @@ def get_weather_forecast(lat, lon, city_name):
     Fetches a 5-day weather forecast.
     """
     logger.info(f"Fetching 5-day forecast for {city_name} ({lat}, {lon})")
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5"
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {"latitude": lat, "longitude": lon, "daily": "weather_code,temperature_2m_max,temperature_2m_min", "timezone": "auto", "forecast_days": 5}
     
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, params=params, timeout=5)
         response.raise_for_status()
         data = response.json()
         
@@ -104,11 +107,17 @@ def get_weather_forecast(lat, lon, city_name):
         code_list = daily.get("weather_code", [])
         
         for i in range(len(time_list)):
-            avg_temp = (temp_max_list[i] + temp_min_list[i]) / 2.0
+            t_max = temp_max_list[i] if i < len(temp_max_list) else None
+            t_min = temp_min_list[i] if i < len(temp_min_list) else None
+            
+            if t_max is None or t_min is None:
+                continue
+                
+            avg_temp = (t_max + t_min) / 2.0
             forecast_list.append({
                 "date": time_list[i],
                 "temperature": round(avg_temp, 1),
-                "weather_condition": get_weather_description(code_list[i])
+                "weather_condition": get_weather_description(code_list[i] if i < len(code_list) else 0)
             })
             
         return {
