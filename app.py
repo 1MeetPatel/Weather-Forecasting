@@ -6,8 +6,8 @@ from utils.prediction import analyze_temperature_trend
 from utils.logger import setup_logger
 
 app = Flask(__name__)
-# Enable CORS for all domains on all routes
-CORS(app)
+# Enable CORS for the frontend origin
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 logger = setup_logger("weather_api")
 
