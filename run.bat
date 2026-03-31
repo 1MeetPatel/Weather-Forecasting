@@ -12,7 +12,10 @@ start "Weather App Frontend" cmd /k "cd frontend && npm run dev"
 
 echo.
 echo Both servers have been launched in separate windows!
-echo Once the Vite server is ready, open your browser and navigate to:
-echo http://localhost:3000
+echo Waiting for the frontend server to spin up...
+timeout /t 5 /nobreak >nul
+
+echo Opening your browser...
+start http://localhost:3000
 echo.
 pause
