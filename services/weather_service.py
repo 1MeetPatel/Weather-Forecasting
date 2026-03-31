@@ -86,11 +86,18 @@ def get_current_weather(lat, lon, city_name):
 
 def get_weather_forecast(lat, lon, city_name):
     """
-    Fetches a 5-day weather forecast.
+    Fetches a 5-day weather forecast, including stats for humidity/precipitation charts.
     """
     logger.info(f"Fetching 5-day forecast for {city_name} ({lat}, {lon})")
     url = "https://api.open-meteo.com/v1/forecast"
-    params = {"latitude": lat, "longitude": lon, "daily": "weather_code,temperature_2m_max,temperature_2m_min", "timezone": "auto", "forecast_days": 5}
+    params = {
+        "latitude": lat, 
+        "longitude": lon, 
+        "daily": "weather_code,temperature_2m_max,temperature_2m_min", 
+        "hourly": "temperature_2m,relative_humidity_2m,precipitation_probability",
+        "timezone": "auto", 
+        "forecast_days": 5
+    }
     
     try:
         response = requests.get(url, params=params, timeout=5)
@@ -98,9 +105,9 @@ def get_weather_forecast(lat, lon, city_name):
         data = response.json()
         
         daily = data.get("daily", {})
+        hourly = data.get("hourly", {})
         forecast_list = []
         
-        # Open-Meteo returns parallel arrays for daily data
         time_list = daily.get("time", [])
         temp_max_list = daily.get("temperature_2m_max", [])
         temp_min_list = daily.get("temperature_2m_min", [])
@@ -117,12 +124,28 @@ def get_weather_forecast(lat, lon, city_name):
             forecast_list.append({
                 "date": time_list[i],
                 "temperature": round(avg_temp, 1),
+                "temp_min": t_min,
+                "temp_max": t_max,
                 "weather_condition": get_weather_description(code_list[i] if i < len(code_list) else 0)
+            })
+            
+        chart_data = []
+        h_time = hourly.get("time", [])
+        h_hum = hourly.get("relative_humidity_2m", [])
+        h_precip = hourly.get("precipitation_probability", [])
+        
+        for i in range(min(24, len(h_time))):
+            time_str = h_time[i].split("T")[1] if "T" in h_time[i] else h_time[i]
+            chart_data.append({
+                "time": time_str,
+                "humidity": h_hum[i] if i < len(h_hum) else 0,
+                "precipitation": h_precip[i] if i < len(h_precip) else 0
             })
             
         return {
             "city": city_name,
-            "forecast": forecast_list
+            "forecast": forecast_list,
+            "chart_data": chart_data
         }
     except requests.exceptions.RequestException as e:
         logger.error(f"Error calling Forecast API: {str(e)}")
