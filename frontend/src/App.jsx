@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Calendar, AlertCircle, Droplets, CloudRain } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, YAxis } from 'recharts';
 import WeatherBackground from './components/WeatherBackground';
+import MapWidget from './components/MapWidget';
 import './index.css';
 
 const App = () => {
@@ -153,7 +154,7 @@ const App = () => {
                   </div>
                 </div>
 
-                <div className="forecast-glass" style={{ marginTop: '20px', marginBottom: '40px' }}>
+                <div className="forecast-glass" style={{ marginTop: '20px' }}>
                   <div className="forecast-header">
                     <CloudRain size={16} /> PRECIPITATION PROBABILITY %
                   </div>
@@ -168,6 +169,8 @@ const App = () => {
                     </ResponsiveContainer>
                   </div>
                 </div>
+
+                <MapWidget city={weatherData.city} />
               </>
             )}
           </>
