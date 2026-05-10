@@ -1,29 +1,29 @@
-# 🌦️ SkyCast — High-Fidelity Weather Intelligence
+#  SkyCast — High-Fidelity Weather Intelligence
 
 **SkyCast** is a modern, full-stack weather forecasting application designed to provide precise, real-time meteorological data with a premium user experience. Built with a Flask backend and a Vite-powered React frontend, SkyCast leverages the Open-Meteo API to deliver accurate 5-day forecasts, temperature trends, and precipitation analytics without the need for complex API keys.
 
 ---
 
-## ✨ Features
+##  Features
 
-### 📡 Real-Time Intelligence
+###  Real-Time Intelligence
 - **Instant Geocoding**: Automatically resolves city names to precise coordinates.
 - **Current Conditions**: Get live updates on temperature, humidity, and weather states.
 - **5-Day Forecast**: Plan ahead with detailed daily breakdowns including Min/Max temperatures.
 
-### 📊 Advanced Analytics
+###  Advanced Analytics
 - **Dynamic Charting**: Visualize humidity and precipitation probability over a 24-hour cycle.
 - **Trend Analysis**: Backend logic that analyzes temperature fluctuations to provide predictive weather insights.
 - **Intelligent Caching**: Optimized server-side caching to ensure lightning-fast response times and reduced API overhead.
 
-### 🛠️ Professional Architecture
+###  Professional Architecture
 - **Flask Backend**: Robust RESTful API with structured logging and error handling.
 - **Vite Frontend**: Ultra-fast, modern React interface for a smooth, lag-free experience.
 - **CORS Enabled**: Ready for cross-origin integration with development and production environments.
 
 ---
 
-## 🚀 Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - **Python 3.10+**
@@ -60,7 +60,7 @@ npm run dev
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 ├── app.py              # Main Flask Entry Point
@@ -74,7 +74,7 @@ npm run dev
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 - **Backend**: Flask, Requests, Flask-CORS
 - **Frontend**: React, Vite, Chart.js/Recharts (for analytics)
 - **Data Source**: Open-Meteo (No API Key Required)
@@ -82,10 +82,7 @@ npm run dev
 
 ---
 
-## 📜 License
+##  License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-## 🤝 Contributors
-- **1MeetPatel** — Lead Developer & Architect
