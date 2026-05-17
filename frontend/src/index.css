@@ -44,6 +44,13 @@ body {
   /* Hardware accelerated layer isolation for lag-free scrolling */
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  transition: max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@media (min-width: 1024px) {
+  .weather-ui-layer {
+    max-width: 1160px;
+  }
 }
 
 /* UI Elements */
@@ -137,7 +144,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 12px;
 }
 
@@ -145,6 +152,21 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  
+  /* Scrollable internal forecast items */
+  max-height: 220px; /* Perfect height showing exactly 4 items and scrolling for the rest */
+  overflow-y: auto;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  
+  /* Soft Apple-style edge fade-out mask */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15px);
+  
+  /* Safe padding so top items don't start faded */
+  padding-top: 4px;
+}
+.forecast-list::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari/Edge */
 }
 
 .forecast-item {
@@ -200,6 +222,242 @@ body {
   margin-top: 20px;
   font-size: 1.2rem;
   color: rgba(255,255,255,0.8);
+}
+
+/* DASHBOARD GRIDS & PANELS */
+.weather-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.flank-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  height: 360px; /* Perfect height to balance flanking cards */
+}
+
+@media (min-width: 1024px) {
+  .weather-dashboard-grid {
+    grid-template-columns: 280px 1fr 280px;
+    align-items: start;
+  }
+  
+  .flank-panel {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .center-panel {
+    height: 360px;
+  }
+}
+
+/* WIDGETS STAT CARD DESIGN */
+.stat-card {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  height: 170px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.75px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.stat-header svg {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+}
+
+.text-yellow { color: #FFD54F; }
+.text-blue { color: #81D4FA; }
+.text-purple { color: #B39DDB; }
+.text-teal { color: #80CBC4; }
+
+.stat-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 2.3rem;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.stat-unit {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.stat-desc {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  margin-top: auto;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+/* WIDGET SPECIFIC SUB-COMPONENTS */
+/* UV Scale */
+.uv-scale-container {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.uv-scale-bar {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #81C784, #FFF176, #FFB74D, #E57373, #BA68C8);
+  border-radius: 2px;
+}
+
+.uv-scale-dot {
+  position: absolute;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+  transition: left 0.5s ease-out;
+}
+
+/* Wind Compass */
+.wind-compass-container {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wind-compass {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.wind-arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 12px solid #81D4FA;
+  position: absolute;
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 0 4px rgba(129, 212, 250, 0.5));
+}
+
+.wind-arrow::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #81D4FA;
+  opacity: 0.3;
+}
+
+.wind-gust {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* Pressure Dial */
+.pressure-gauge-container {
+  margin-top: auto;
+  position: relative;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 2px;
+}
+
+.pressure-gauge-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1px;
+}
+
+.pressure-gauge-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 24px;
+  background: #80CBC4;
+  transform-origin: bottom center;
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 0 6px rgba(128, 203, 196, 0.5);
+}
+
+/* CHARTS GRID SYSTEM */
+.weather-bottom-row {
+  margin-top: 20px;
+  width: 100%;
+  animation: fadeIn 1s ease-out;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ANIMATIONS */

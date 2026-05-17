@@ -65,7 +65,13 @@ def get_current_weather(lat, lon, city_name):
     """
     logger.info(f"Fetching current weather for {city_name} ({lat}, {lon})")
     url = "https://api.open-meteo.com/v1/forecast"
-    params = {"latitude": lat, "longitude": lon, "current": "temperature_2m,relative_humidity_2m,weather_code,is_day"}
+    params = {
+        "latitude": lat, 
+        "longitude": lon, 
+        "current": "temperature_2m,relative_humidity_2m,weather_code,is_day,wind_speed_10m,surface_pressure",
+        "hourly": "uv_index,visibility",
+        "timezone": "auto"
+    }
     
     try:
         response = requests.get(url, params=params, timeout=5)
@@ -73,6 +79,24 @@ def get_current_weather(lat, lon, city_name):
         data = response.json()
         
         current = data.get("current", {})
+        hourly = data.get("hourly", {})
+        
+        # Match current hour timestamp to get hourly uv_index and visibility
+        uv_val = 0.0
+        visibility_val = 10000.0 # Default to 10km
+        
+        current_time_str = current.get("time")
+        if current_time_str and "time" in hourly:
+            # Match current hour (YYYY-MM-DDTHH:00)
+            target_hour = current_time_str[:13] + ":00"
+            hourly_times = hourly.get("time", [])
+            if target_hour in hourly_times:
+                idx = hourly_times.index(target_hour)
+                uv_val = hourly.get("uv_index", [])[idx] if "uv_index" in hourly else 0.0
+                visibility_val = hourly.get("visibility", [])[idx] if "visibility" in hourly else 10000.0
+            else:
+                uv_val = hourly.get("uv_index", [0.0])[0] if "uv_index" in hourly and hourly.get("uv_index") else 0.0
+                visibility_val = hourly.get("visibility", [10000.0])[0] if "visibility" in hourly and hourly.get("visibility") else 10000.0
         
         return {
             "city": city_name,
@@ -80,6 +104,10 @@ def get_current_weather(lat, lon, city_name):
             "humidity": current.get("relative_humidity_2m"),
             "weather_description": get_weather_description(current.get("weather_code")),
             "is_day": current.get("is_day", 1), # Default to day if missing
+            "wind_speed": current.get("wind_speed_10m"),
+            "pressure": current.get("surface_pressure"),
+            "uv_index": uv_val,
+            "visibility": visibility_val
         }
     except requests.exceptions.RequestException as e:
         logger.error(f"Error calling Weather API: {str(e)}")
@@ -97,7 +125,7 @@ def get_weather_forecast(lat, lon, city_name):
         "daily": "weather_code,temperature_2m_max,temperature_2m_min", 
         "hourly": "temperature_2m,relative_humidity_2m,precipitation_probability",
         "timezone": "auto", 
-        "forecast_days": 5
+        "forecast_days": 7
     }
     
     try:

@@ -18,7 +18,7 @@ def get_weather(city):
     cache_key = f"weather_{city.lower()}"
     cached_data = weather_cache.get(cache_key)
     
-    if cached_data:
+    if cached_data and "uv_index" in cached_data:
         logger.info(f"Returning cached weather data for {city}")
         return jsonify(cached_data)
 
