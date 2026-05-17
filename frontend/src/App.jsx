@@ -119,7 +119,7 @@ const App = () => {
                       </div>
                       <div className="forecast-temps">
                         <span className="low">{Math.round(day.temp_min)}°</span>
-                        <div style={{ width: 100, height: 6, background: 'linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))', borderRadius: 10, alignSelf: 'center'}} />
+                        <div style={{ flex: 1, height: 6, background: 'linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))', borderRadius: 10, alignSelf: 'center'}} />
                         <span className="high">{Math.round(day.temp_max)}°</span>
                       </div>
                     </div>

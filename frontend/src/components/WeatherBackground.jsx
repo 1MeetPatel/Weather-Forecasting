@@ -128,45 +128,56 @@ const ProceduralClouds = ({ isDark }) => (
 const WeatherBackground = ({ condition, isDay = true }) => {
   const mainCondition = condition?.toLowerCase() || 'clear';
 
-  let bgClass = 'bg-clear-day';
-  if (mainCondition.includes('storm') || mainCondition.includes('thunder')) bgClass = 'bg-storm';
-  else if (mainCondition.includes('rain') || mainCondition.includes('drizzle')) bgClass = isDay ? 'bg-rain-day' : 'bg-rain-night';
-  else if (mainCondition.includes('snow')) bgClass = isDay ? 'bg-snow-day' : 'bg-snow-night';
-  else if (mainCondition.includes('cloud') || mainCondition.includes('overcast') || mainCondition.includes('fog')) bgClass = isDay ? 'bg-clouds-day' : 'bg-clouds-night';
-  else bgClass = isDay ? 'bg-clear-day' : 'bg-clear-night';
+  const isRain = mainCondition.includes('rain') || mainCondition.includes('drizzle');
+  const isSnow = mainCondition.includes('snow');
+  const isStorm = mainCondition.includes('storm') || mainCondition.includes('thunder');
+  
+  // "Partly cloudy" is a gorgeous hybrid: bright sun/moon, bright sky, but with drifting clouds.
+  // "Overcast", "fog", "mist", "haze", "cloudy" (without "partly") are fully overcast.
+  const isPartlyCloudy = mainCondition.includes('partly') && mainCondition.includes('cloud');
+  const isFullyCloudy = (mainCondition.includes('cloud') || mainCondition.includes('overcast') || mainCondition.includes('fog') || mainCondition.includes('mist') || mainCondition.includes('haze')) && !isPartlyCloudy;
+  const isClear = !isRain && !isSnow && !isStorm && !isFullyCloudy && !isPartlyCloudy;
 
-  const hasClouds = mainCondition.includes('cloud') || mainCondition.includes('overcast') || mainCondition.includes('fog') || mainCondition.includes('rain') || mainCondition.includes('snow') || mainCondition.includes('storm');
-  const isDarkClouds = !isDay || mainCondition.includes('storm') || mainCondition.includes('rain');
+  let bgClass = 'bg-clear-day';
+  if (isStorm) bgClass = 'bg-storm';
+  else if (isRain) bgClass = isDay ? 'bg-rain-day' : 'bg-rain-night';
+  else if (isSnow) bgClass = isDay ? 'bg-snow-day' : 'bg-snow-night';
+  else if (isFullyCloudy) bgClass = isDay ? 'bg-clouds-day' : 'bg-clouds-night';
+  else bgClass = isDay ? 'bg-clear-day' : 'bg-clear-night'; // Clear, Mainly clear, and Partly cloudy all use bright sky
+
+  const hasClouds = isFullyCloudy || isPartlyCloudy || isRain || isSnow || isStorm;
+  const isDarkClouds = !isDay || isStorm || isRain;
 
   const elements = useMemo(() => {
     let els = [];
 
-    // Lighting (Sun/Moon)
-    if (!mainCondition.includes('cloud') && !mainCondition.includes('rain') && !mainCondition.includes('snow') && !mainCondition.includes('storm')) {
-      if (isDay) els.push(<div key="sun" className="sun-glow" />);
-      else {
-        els.push(<div key="moon" className="moon-glow" />);
+    // Lighting (Sun/Moon) - Rendered on Clear OR Partly Cloudy days
+    if (isClear || isPartlyCloudy) {
+      if (isDay) {
+        els.push(<div key="sun" className="sun-glow" />);
+      } else {
         els.push(...generateStars(50));
+        els.push(<div key="moon" className="moon-glow" />);
       }
-    } else if (!isDay && !mainCondition.includes('storm') && !mainCondition.includes('rain')) {
+    } else if (!isDay && !isStorm && !isRain) {
       els.push(...generateStars(20)); // fewer stars peeking through light clouds
     }
 
     // Particles & Glass Droplets
-    if (mainCondition.includes('rain') || mainCondition.includes('drizzle') || mainCondition.includes('storm')) {
+    if (isRain || isStorm) {
       els.push(...generateParticles(120, 'apple-rain', ['rain-near', 'rain-mid', 'rain-far']));
       els.push(...generateGlassDroplets()); // spawn ultrarealistic 3D condensation and dripping raindrops
-    } else if (mainCondition.includes('snow')) {
+    } else if (isSnow) {
       els.push(...generateParticles(150, 'apple-snow', ['snow-near', 'snow-mid', 'snow-far']));
     }
 
     // Lightning
-    if (mainCondition.includes('storm') || mainCondition.includes('thunder')) {
+    if (isStorm) {
       els.push(<div key="lightning" className="lightning-flash" />);
     }
 
     return els;
-  }, [mainCondition, isDay]);
+  }, [mainCondition, isDay, isClear, isPartlyCloudy, isRain, isSnow, isStorm]);
 
   return (
     <div className={`apple-weather-bg ${bgClass}`}>
