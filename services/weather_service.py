@@ -65,7 +65,7 @@ def get_current_weather(lat, lon, city_name):
     """
     logger.info(f"Fetching current weather for {city_name} ({lat}, {lon})")
     url = "https://api.open-meteo.com/v1/forecast"
-    params = {"latitude": lat, "longitude": lon, "current": "temperature_2m,relative_humidity_2m,weather_code"}
+    params = {"latitude": lat, "longitude": lon, "current": "temperature_2m,relative_humidity_2m,weather_code,is_day"}
     
     try:
         response = requests.get(url, params=params, timeout=5)
@@ -79,6 +79,7 @@ def get_current_weather(lat, lon, city_name):
             "temperature": current.get("temperature_2m"),
             "humidity": current.get("relative_humidity_2m"),
             "weather_description": get_weather_description(current.get("weather_code")),
+            "is_day": current.get("is_day", 1), # Default to day if missing
         }
     except requests.exceptions.RequestException as e:
         logger.error(f"Error calling Weather API: {str(e)}")

@@ -1,0 +1,161 @@
+.apple-weather-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: background 1.5s ease-in-out;
+}
+
+/* Gradients based on weather and time */
+.bg-clear-day { background: linear-gradient(180deg, #1E88E5 0%, #64B5F6 100%); }
+.bg-clear-night { background: linear-gradient(180deg, #0A192F 0%, #112240 100%); }
+.bg-clouds-day { background: linear-gradient(180deg, #607D8B 0%, #90A4AE 100%); }
+.bg-clouds-night { background: linear-gradient(180deg, #263238 0%, #37474F 100%); }
+.bg-rain-day { background: linear-gradient(180deg, #455A64 0%, #78909C 100%); }
+.bg-rain-night { background: linear-gradient(180deg, #1C2331 0%, #2A3648 100%); }
+.bg-snow-day { background: linear-gradient(180deg, #78909C 0%, #CFD8DC 100%); }
+.bg-snow-night { background: linear-gradient(180deg, #263238 0%, #455A64 100%); }
+.bg-storm { background: linear-gradient(180deg, #121212 0%, #2A2A2A 100%); }
+
+/* Sun and Moon glow */
+.sun-glow {
+  position: absolute;
+  top: 15%; right: 20%;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(255,235,59,1) 0%, rgba(255,235,59,0.4) 40%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 100px 50px rgba(255, 235, 59, 0.4);
+  filter: blur(8px);
+}
+
+.moon-glow {
+  position: absolute;
+  top: 15%; right: 20%;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 80px 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Procedural SVG Clouds */
+.procedural-clouds-wrapper {
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200vw; height: 200vh;
+  filter: blur(4px); /* Soften the fractal noise slightly */
+}
+
+.scrolling-clouds {
+  position: absolute;
+  top: 0; left: 0;
+  animation: cloud-pan 120s linear infinite;
+  opacity: 0.8;
+}
+
+.scrolling-clouds-layer2 {
+  position: absolute;
+  top: 0; left: 0;
+  animation: cloud-pan-reverse 90s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes cloud-pan {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-15%, -5%); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes cloud-pan-reverse {
+  0% { transform: translate(-10%, -5%); }
+  50% { transform: translate(5%, 0%); }
+  100% { transform: translate(-10%, -5%); }
+}
+
+/* Rain Particles */
+.apple-rain {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 100%);
+  border-radius: 2px;
+  will-change: transform, opacity;
+}
+
+.rain-near { width: 2px; height: 40px; filter: blur(1px); animation: fall-fast linear infinite; z-index: 3; }
+.rain-mid { width: 1.5px; height: 25px; filter: blur(0.5px); animation: fall-medium linear infinite; z-index: 2; }
+.rain-far { width: 1px; height: 15px; opacity: 0.5; animation: fall-slow linear infinite; z-index: 1; }
+
+@keyframes fall-fast {
+  0% { transform: translateY(-10vh) rotate(10deg); opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(10deg); opacity: 0; }
+}
+
+@keyframes fall-medium {
+  0% { transform: translateY(-10vh) rotate(10deg); opacity: 0.6; }
+  100% { transform: translateY(110vh) rotate(10deg); opacity: 0; }
+}
+
+@keyframes fall-slow {
+  0% { transform: translateY(-10vh) rotate(10deg); opacity: 0.4; }
+  100% { transform: translateY(110vh) rotate(10deg); opacity: 0; }
+}
+
+/* Snow Particles */
+.apple-snow {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+.snow-near { width: 10px; height: 10px; filter: blur(3px); animation: snow-fall-fast linear infinite; z-index: 3; }
+.snow-mid { width: 6px; height: 6px; filter: blur(1px); animation: snow-fall-medium linear infinite; z-index: 2; }
+.snow-far { width: 3px; height: 3px; opacity: 0.6; animation: snow-fall-slow linear infinite; z-index: 1; }
+
+@keyframes snow-fall-fast {
+  0% { transform: translateY(-10vh) translateX(0px); opacity: 0.8; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  100% { transform: translateY(110vh) translateX(-20px); opacity: 0; }
+}
+@keyframes snow-fall-medium {
+  0% { transform: translateY(-10vh) translateX(0px); opacity: 0.6; }
+  50% { transform: translateY(50vh) translateX(-15px); }
+  100% { transform: translateY(110vh) translateX(15px); opacity: 0; }
+}
+@keyframes snow-fall-slow {
+  0% { transform: translateY(-10vh) translateX(0px); opacity: 0.4; }
+  50% { transform: translateY(50vh) translateX(10px); }
+  100% { transform: translateY(110vh) translateX(-10px); opacity: 0; }
+}
+
+/* Lightning */
+.lightning-flash {
+  position: absolute;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  animation: flash 10s infinite;
+  z-index: 10;
+}
+
+@keyframes flash {
+  0%, 95%, 98%, 100% { opacity: 0; }
+  96% { opacity: 0.8; }
+  97% { opacity: 0.2; }
+}
+
+/* Stars */
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}

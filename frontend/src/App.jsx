@@ -61,7 +61,7 @@ const App = () => {
 
   return (
     <div className="weather-app-container">
-      <WeatherBackground condition={weatherData?.weather_description || 'Clear'} />
+      <WeatherBackground condition={weatherData?.weather_description || 'Clear'} isDay={weatherData?.is_day !== 0} />
       
       <div className="weather-ui-layer">
         <form onSubmit={handleSearch} className="search-bar">

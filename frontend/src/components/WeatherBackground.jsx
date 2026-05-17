@@ -1,76 +1,112 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
+import './WeatherBackground.css';
 
-const generateParticles = (count, className) => {
+const generateParticles = (count, baseClass, variants) => {
+  return Array.from({ length: count }).map((_, i) => {
+    const variant = variants[Math.floor(Math.random() * variants.length)];
+    return (
+      <div
+        key={i}
+        className={`${baseClass} ${variant}`}
+        style={{
+          left: `${Math.random() * 120 - 10}%`,
+          animationDuration: `${Math.random() * 1.5 + 0.8}s`,
+          animationDelay: `-${Math.random() * 2}s`
+        }}
+      />
+    );
+  });
+};
+
+const generateStars = (count) => {
   return Array.from({ length: count }).map((_, i) => (
     <div
-      key={i}
-      className={className}
+      key={`star-${i}`}
+      className="star"
       style={{
         left: `${Math.random() * 100}%`,
-        animationDuration: `${Math.random() * 2 + 1}s`,
-        animationDelay: `-${Math.random() * 2}s`,
-        opacity: Math.random() * 0.5 + 0.3
+        top: `${Math.random() * 60}%`,
+        width: `${Math.random() * 3 + 1}px`,
+        height: `${Math.random() * 3 + 1}px`,
+        animationDelay: `-${Math.random() * 5}s`,
+        animationDuration: `${Math.random() * 3 + 2}s`
       }}
     />
   ));
 };
 
-const CloudSvg = ({ opacity }) => (
-  <svg width="200" height="100" viewBox="0 0 200 100" fill="white" style={{ opacity }}>
-    <path d="M50 80 Q30 80 30 60 Q30 40 50 40 Q60 20 90 20 Q120 20 130 40 Q150 40 150 60 Q150 80 130 80 Z" />
-  </svg>
+const ProceduralClouds = ({ isDark }) => (
+  <div className="procedural-clouds-wrapper">
+    <svg className="scrolling-clouds" width="200%" height="200%">
+      <filter id={`cloud-noise-${isDark ? 'dark' : 'light'}`}>
+        <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="4" seed="5" />
+        <feColorMatrix type="matrix" values={`
+          0 0 0 0 ${isDark ? 0.3 : 1}
+          0 0 0 0 ${isDark ? 0.35 : 1}
+          0 0 0 0 ${isDark ? 0.4 : 1}
+          1 0 0 -0.2 0`} />
+      </filter>
+      <rect width="100%" height="100%" filter={`url(#cloud-noise-${isDark ? 'dark' : 'light'})`} />
+    </svg>
+    <svg className="scrolling-clouds-layer2" width="200%" height="200%">
+      <filter id={`cloud-noise-2-${isDark ? 'dark' : 'light'}`}>
+        <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="3" seed="12" />
+        <feColorMatrix type="matrix" values={`
+          0 0 0 0 ${isDark ? 0.2 : 1}
+          0 0 0 0 ${isDark ? 0.25 : 1}
+          0 0 0 0 ${isDark ? 0.3 : 1}
+          1 0 0 -0.4 0`} />
+      </filter>
+      <rect width="100%" height="100%" filter={`url(#cloud-noise-2-${isDark ? 'dark' : 'light'})`} />
+    </svg>
+  </div>
 );
 
-const cloudStyle = (scale, duration, top, delay = 0) => ({
-  position: 'absolute',
-  top,
-  left: 0,
-  transform: `scale(${scale})`,
-  animation: `cloud-float ${duration}s linear infinite`,
-  animationDelay: `${delay}s`,
-  willChange: 'transform'
-});
-
-const WeatherBackground = ({ condition }) => {
+const WeatherBackground = ({ condition, isDay = true }) => {
   const mainCondition = condition?.toLowerCase() || 'clear';
 
-  let colors = { top: '#1e88e5', bottom: '#64b5f6' }; 
-  let elements = [];
+  let bgClass = 'bg-clear-day';
+  if (mainCondition.includes('storm') || mainCondition.includes('thunder')) bgClass = 'bg-storm';
+  else if (mainCondition.includes('rain') || mainCondition.includes('drizzle')) bgClass = isDay ? 'bg-rain-day' : 'bg-rain-night';
+  else if (mainCondition.includes('snow')) bgClass = isDay ? 'bg-snow-day' : 'bg-snow-night';
+  else if (mainCondition.includes('cloud') || mainCondition.includes('overcast') || mainCondition.includes('fog')) bgClass = isDay ? 'bg-clouds-day' : 'bg-clouds-night';
+  else bgClass = isDay ? 'bg-clear-day' : 'bg-clear-night';
 
-  if (mainCondition.includes('cloud')) {
-    colors = { top: '#607D8B', bottom: '#90A4AE' };
-    elements = (
-      <>
-        <div style={cloudStyle(1.2, 45, '10%', -10)}><CloudSvg opacity={0.6}/></div>
-        <div style={cloudStyle(0.8, 60, '25%', -30)}><CloudSvg opacity={0.4}/></div>
-        <div style={cloudStyle(1.5, 30, '5%', -5)}><CloudSvg opacity={0.8}/></div>
-        <div style={cloudStyle(1.0, 50, '40%', -20)}><CloudSvg opacity={0.5}/></div>
-      </>
-    );
-  } else if (mainCondition.includes('rain') || mainCondition.includes('drizzle')) {
-    colors = { top: '#455A64', bottom: '#263238' };
-    elements = generateParticles(80, 'rain-drop');
-  } else if (mainCondition.includes('snow')) {
-    colors = { top: '#78909C', bottom: '#CFD8DC' };
-    elements = generateParticles(50, 'snow-flake');
-  } else if (mainCondition.includes('clear')) {
-    colors = { top: '#1E88E5', bottom: '#64B5F6' };
-    // Abstract sun
-    elements = (
-       <div style={{ position:'absolute', top: '15%', right: '15%', width: 120, height: 120, background: 'rgba(255, 235, 59, 0.9)', borderRadius: '50%', boxShadow: '0 0 80px rgba(255, 235, 59, 0.8)' }} />
-    );
-  } else if (mainCondition.includes('thunderstorm') || mainCondition.includes('storm')) {
-    colors = { top: '#1b1b1b', bottom: '#0a0a0a' };
-    elements = generateParticles(100, 'rain-drop');
-  }
+  const hasClouds = mainCondition.includes('cloud') || mainCondition.includes('overcast') || mainCondition.includes('fog') || mainCondition.includes('rain') || mainCondition.includes('snow') || mainCondition.includes('storm');
+  const isDarkClouds = !isDay || mainCondition.includes('storm') || mainCondition.includes('rain');
 
-  useEffect(() => {
-    document.documentElement.style.setProperty('--bg-gradient-top', colors.top);
-    document.documentElement.style.setProperty('--bg-gradient-bottom', colors.bottom);
-  }, [colors]);
+  const elements = useMemo(() => {
+    let els = [];
+
+    // Lighting (Sun/Moon)
+    if (!mainCondition.includes('cloud') && !mainCondition.includes('rain') && !mainCondition.includes('snow') && !mainCondition.includes('storm')) {
+      if (isDay) els.push(<div key="sun" className="sun-glow" />);
+      else {
+        els.push(<div key="moon" className="moon-glow" />);
+        els.push(...generateStars(50));
+      }
+    } else if (!isDay && !mainCondition.includes('storm') && !mainCondition.includes('rain')) {
+      els.push(...generateStars(20)); // fewer stars peeking through light clouds
+    }
+
+    // Particles
+    if (mainCondition.includes('rain') || mainCondition.includes('drizzle') || mainCondition.includes('storm')) {
+      els.push(...generateParticles(120, 'apple-rain', ['rain-near', 'rain-mid', 'rain-far']));
+    } else if (mainCondition.includes('snow')) {
+      els.push(...generateParticles(150, 'apple-snow', ['snow-near', 'snow-mid', 'snow-far']));
+    }
+
+    // Lightning
+    if (mainCondition.includes('storm') || mainCondition.includes('thunder')) {
+      els.push(<div key="lightning" className="lightning-flash" />);
+    }
+
+    return els;
+  }, [mainCondition, isDay]);
 
   return (
-    <div className="weather-background">
+    <div className={`apple-weather-bg ${bgClass}`}>
+      {hasClouds && <ProceduralClouds isDark={isDarkClouds} />}
       {elements}
     </div>
   );

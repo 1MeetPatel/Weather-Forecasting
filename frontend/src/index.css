@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg-gradient-top: #1e88e5;
-  --bg-gradient-bottom: #64b5f6;
   --text-main: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.75);
 }
@@ -15,10 +13,9 @@
 
 body {
   font-family: 'Inter', -apple-system, blinkmacsystemfont, sans-serif;
-  background-color: var(--bg-gradient-bottom);
+  background-color: #000;
   color: var(--text-main);
   overflow: hidden;
-  transition: background 1s ease;
 }
 
 #root {
@@ -31,17 +28,7 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
-  background: linear-gradient(to bottom, var(--bg-gradient-top), var(--bg-gradient-bottom));
-  transition: background 1s ease;
   overflow-y: auto;
-}
-
-.weather-background {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
 }
 
 .weather-ui-layer {
@@ -207,40 +194,4 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes cloud-float {
-  0% { transform: translateX(-200px); }
-  100% { transform: translateX(100vw); }
-}
-
-@keyframes rain-fall {
-  0% { transform: translateY(-100px) rotate(15deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(15deg); opacity: 0; }
-}
-
-@keyframes snow-fall {
-  0% { transform: translateY(-100px) translateX(0) scale(1); opacity: 1; }
-  50% { transform: translateY(50vh) translateX(50px) scale(0.8); }
-  100% { transform: translateY(100vh) translateX(-50px) scale(0.5); opacity: 0; }
-}
-
-.rain-drop {
-  position: absolute;
-  top: 0;
-  width: 2px;
-  height: 25px;
-  background: rgba(255,255,255,0.4);
-  animation: rain-fall linear infinite;
-}
-
-.snow-flake {
-  position: absolute;
-  top: 0;
-  width: 6px;
-  height: 6px;
-  background: rgba(255,255,255,0.8);
-  border-radius: 50%;
-  animation: snow-fall linear infinite;
-  box-shadow: 0 0 5px white;
 }
