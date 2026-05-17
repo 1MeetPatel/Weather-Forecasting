@@ -12,10 +12,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Default to a city so it's not empty on load
-  useEffect(() => {
-    fetchWeather('London');
-  }, []);
+
 
   const fetchWeather = async (searchCity) => {
     if (!searchCity) return;
@@ -81,6 +78,14 @@ const App = () => {
 
         {loading && <div className="loading">Detecting skies...</div>}
         {error && <div className="error-message" style={{display: 'flex', alignItems:'center', justifyContent: 'center', gap: 8}}><AlertCircle size={20} /> {error}</div>}
+
+        {!loading && !error && !weatherData && (
+          <div className="empty-state" style={{ textAlign: 'center', color: 'rgba(255,255,255,0.8)', marginTop: '10vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.05)', padding: '40px', borderRadius: '24px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <Search size={48} style={{ opacity: 0.5, marginBottom: '10px' }} />
+            <h2 style={{ fontWeight: 500, margin: 0 }}>Welcome to Weather Forecast</h2>
+            <p style={{ opacity: 0.7, margin: 0 }}>Please search for a city or country to view the weather.</p>
+          </div>
+        )}
 
         {!loading && !error && weatherData && (
           <>
