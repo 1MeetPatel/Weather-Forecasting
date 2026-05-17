@@ -41,6 +41,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Hardware accelerated layer isolation for lag-free scrolling */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 /* UI Elements */
