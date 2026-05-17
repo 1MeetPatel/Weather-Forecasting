@@ -128,7 +128,7 @@ const App = () => {
 
                 {forecastData.prediction && (
                   <div className="prediction-message">
-                    ✨ {forecastData.prediction}
+                    {forecastData.prediction}
                   </div>
                 )}
               </div>
