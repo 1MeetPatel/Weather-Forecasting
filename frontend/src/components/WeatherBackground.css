@@ -71,7 +71,6 @@
   position: absolute;
   top: -50%; left: -50%;
   width: 200vw; height: 200vh;
-  filter: blur(4px); /* Soften the fractal noise slightly */
   /* Hardware acceleration */
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -115,14 +114,31 @@
 /* Rain Particles */
 .apple-rain {
   position: absolute;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 100%);
   border-radius: 2px;
   will-change: transform, opacity;
 }
 
-.rain-near { width: 2px; height: 40px; filter: blur(1px); animation: fall-fast linear infinite; z-index: 3; }
-.rain-mid { width: 1.5px; height: 25px; filter: blur(0.5px); animation: fall-medium linear infinite; z-index: 2; }
-.rain-far { width: 1px; height: 15px; opacity: 0.5; animation: fall-slow linear infinite; z-index: 1; }
+.rain-near { 
+  width: 2px; 
+  height: 40px; 
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 20%, rgba(255,255,255,0.55) 80%, rgba(255,255,255,0) 100%);
+  animation: fall-fast linear infinite; 
+  z-index: 3; 
+}
+.rain-mid { 
+  width: 1.5px; 
+  height: 25px; 
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 20%, rgba(255,255,255,0.35) 80%, rgba(255,255,255,0) 100%);
+  animation: fall-medium linear infinite; 
+  z-index: 2; 
+}
+.rain-far { 
+  width: 1px; 
+  height: 15px; 
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.2) 80%, rgba(255,255,255,0) 100%);
+  animation: fall-slow linear infinite; 
+  z-index: 1; 
+}
 
 @keyframes fall-fast {
   0% { transform: translate3d(0, -10vh, 0) rotate(10deg); opacity: 0.8; }
@@ -216,14 +232,31 @@
 /* Snow Particles */
 .apple-snow {
   position: absolute;
-  background: white;
   border-radius: 50%;
   will-change: transform, opacity;
 }
 
-.snow-near { width: 10px; height: 10px; filter: blur(3px); animation: snow-fall-fast linear infinite; z-index: 3; }
-.snow-mid { width: 6px; height: 6px; filter: blur(1px); animation: snow-fall-medium linear infinite; z-index: 2; }
-.snow-far { width: 3px; height: 3px; opacity: 0.6; animation: snow-fall-slow linear infinite; z-index: 1; }
+.snow-near { 
+  width: 12px; 
+  height: 12px; 
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0) 70%);
+  animation: snow-fall-fast linear infinite; 
+  z-index: 3; 
+}
+.snow-mid { 
+  width: 8px; 
+  height: 8px; 
+  background: radial-gradient(circle, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 80%);
+  animation: snow-fall-medium linear infinite; 
+  z-index: 2; 
+}
+.snow-far { 
+  width: 4px; 
+  height: 4px; 
+  background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.15) 60%, rgba(255,255,255,0) 90%);
+  animation: snow-fall-slow linear infinite; 
+  z-index: 1; 
+}
 
 @keyframes snow-fall-fast {
   0% { transform: translate3d(0, -10vh, 0) translateX(0px); opacity: 0.8; }

@@ -102,23 +102,25 @@ const ProceduralClouds = ({ isDark }) => (
   <div className="procedural-clouds-wrapper">
     <svg className="scrolling-clouds" width="200%" height="200%">
       <filter id={`cloud-noise-${isDark ? 'dark' : 'light'}`}>
-        <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="4" seed="5" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="3" seed="5" />
         <feColorMatrix type="matrix" values={`
           0 0 0 0 ${isDark ? 0.3 : 1}
           0 0 0 0 ${isDark ? 0.35 : 1}
           0 0 0 0 ${isDark ? 0.4 : 1}
           1 0 0 -0.2 0`} />
+        <feGaussianBlur stdDeviation="3" />
       </filter>
       <rect width="100%" height="100%" filter={`url(#cloud-noise-${isDark ? 'dark' : 'light'})`} />
     </svg>
     <svg className="scrolling-clouds-layer2" width="200%" height="200%">
       <filter id={`cloud-noise-2-${isDark ? 'dark' : 'light'}`}>
-        <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="3" seed="12" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" seed="12" />
         <feColorMatrix type="matrix" values={`
           0 0 0 0 ${isDark ? 0.2 : 1}
           0 0 0 0 ${isDark ? 0.25 : 1}
           0 0 0 0 ${isDark ? 0.3 : 1}
           1 0 0 -0.4 0`} />
+        <feGaussianBlur stdDeviation="3" />
       </filter>
       <rect width="100%" height="100%" filter={`url(#cloud-noise-2-${isDark ? 'dark' : 'light'})`} />
     </svg>
