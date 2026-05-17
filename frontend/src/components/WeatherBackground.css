@@ -104,6 +104,76 @@
   100% { transform: translateY(110vh) rotate(10deg); opacity: 0; }
 }
 
+/* ULTRAREALISTIC GLASS CONDENSATION DROPLETS */
+.glass-droplet {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 4;
+
+  /* Real physical refraction using glassmorphic blurs */
+  backdrop-filter: blur(0.5px) saturate(1.3) brightness(1.1);
+  -webkit-backdrop-filter: blur(0.5px) saturate(1.3) brightness(1.1);
+
+  /* Multi-layered shadows: Specular highlights, refraction shades, and dark ambient drop shadow */
+  box-shadow: 
+    inset -1px -2px 3px rgba(0, 0, 0, 0.35),   /* Bottom internal refraction shadow */
+    inset 1px 2px 3px rgba(255, 255, 255, 0.75), /* Top-left specular light reflection */
+    0px 2px 4px rgba(0, 0, 0, 0.2),            /* Ambient soft drop shadow */
+    0px 0px 1px rgba(0, 0, 0, 0.45);           /* Fine dark bead borders for definition */
+}
+
+/* Tiny static condensation particles */
+.droplet-mist {
+  border-radius: 50%;
+  backdrop-filter: none; /* mist is too tiny for blur */
+  -webkit-backdrop-filter: none;
+  box-shadow: 
+    inset -0.5px -0.5px 1px rgba(0, 0, 0, 0.4),
+    inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.8),
+    0px 0.5px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Medium static droplets */
+.droplet-standard {
+  /* Inherits main styles */
+}
+
+/* Heavy dripping droplets sliding winding down the glass */
+.droplet-dripper {
+  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+  animation: drip-down-winding 9s cubic-bezier(0.4, 0.1, 0.7, 0.95) infinite;
+}
+
+@keyframes drip-down-winding {
+  0% {
+    transform: translateY(0) translateX(0) scaleY(1);
+    opacity: 0;
+  }
+  4% {
+    opacity: 0.85;
+  }
+  /* Organic winding slide path - shifting slightly left/right as gravity pulls it down */
+  25% {
+    transform: translateY(50px) translateX(3px) scaleY(1.15) scaleX(0.9);
+  }
+  50% {
+    transform: translateY(110px) translateX(-4px) scaleY(1.05) scaleX(0.95);
+  }
+  75% {
+    transform: translateY(180px) translateX(2px) scaleY(1.15) scaleX(0.9);
+  }
+  94% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(240px) translateX(-1px) scaleY(0.7) scaleX(1);
+    opacity: 0;
+  }
+}
+
 /* Snow Particles */
 .apple-snow {
   position: absolute;

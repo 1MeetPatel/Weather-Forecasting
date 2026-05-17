@@ -35,6 +35,69 @@ const generateStars = (count) => {
   ));
 };
 
+const generateGlassDroplets = () => {
+  const droplets = [];
+  
+  // 1. Tiny Mist beads (highly dense, static, representing condensation)
+  for (let i = 0; i < 45; i++) {
+    const size = Math.random() * 2 + 1.5; // 1.5px - 3.5px
+    droplets.push(
+      <div
+        key={`mist-${i}`}
+        className="glass-droplet droplet-mist"
+        style={{
+          left: `${Math.random() * 96 + 2}%`,
+          top: `${Math.random() * 96 + 2}%`,
+          width: `${size}px`,
+          height: `${size}px`,
+          opacity: Math.random() * 0.4 + 0.4
+        }}
+      />
+    );
+  }
+
+  // 2. Standard static water beads (medium size, varying teardrop shapes)
+  for (let i = 0; i < 25; i++) {
+    const size = Math.random() * 4 + 4; // 4px - 8px
+    const rotation = Math.random() * 40 - 20; // organic slight tilting
+    droplets.push(
+      <div
+        key={`standard-${i}`}
+        className="glass-droplet droplet-standard"
+        style={{
+          left: `${Math.random() * 96 + 2}%`,
+          top: `${Math.random() * 92 + 4}%`,
+          width: `${size}px`,
+          height: `${size * 1.15}px`,
+          transform: `rotate(${rotation}deg)`,
+          opacity: Math.random() * 0.3 + 0.65
+        }}
+      />
+    );
+  }
+
+  // 3. Heavy dripping droplets (larger, elongated, slowly winding down screen)
+  for (let i = 0; i < 8; i++) {
+    const size = Math.random() * 5 + 8; // 8px - 13px
+    droplets.push(
+      <div
+        key={`dripper-${i}`}
+        className="glass-droplet droplet-dripper"
+        style={{
+          left: `${Math.random() * 90 + 5}%`,
+          top: `${Math.random() * 60 + 5}%`,
+          width: `${size}px`,
+          height: `${size * 1.4}px`,
+          animationDelay: `-${Math.random() * 15}s`,
+          animationDuration: `${Math.random() * 6 + 7}s`
+        }}
+      />
+    );
+  }
+
+  return droplets;
+};
+
 const ProceduralClouds = ({ isDark }) => (
   <div className="procedural-clouds-wrapper">
     <svg className="scrolling-clouds" width="200%" height="200%">
@@ -89,9 +152,10 @@ const WeatherBackground = ({ condition, isDay = true }) => {
       els.push(...generateStars(20)); // fewer stars peeking through light clouds
     }
 
-    // Particles
+    // Particles & Glass Droplets
     if (mainCondition.includes('rain') || mainCondition.includes('drizzle') || mainCondition.includes('storm')) {
       els.push(...generateParticles(120, 'apple-rain', ['rain-near', 'rain-mid', 'rain-far']));
+      els.push(...generateGlassDroplets()); // spawn ultrarealistic 3D condensation and dripping raindrops
     } else if (mainCondition.includes('snow')) {
       els.push(...generateParticles(150, 'apple-snow', ['snow-near', 'snow-mid', 'snow-far']));
     }
